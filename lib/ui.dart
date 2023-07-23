@@ -39,31 +39,31 @@ void handleUserInput(TaskManager taskManager) {
         taskManager.createTask(title, description, deadline);
         break;
       case '2':
-        print('Enter task title:');
-        var title = '';
-        while (title.isEmpty) {
-          title = stdin.readLineSync() ?? '';
-        }
-        taskManager.startTimer(title);
-        break;
       case '3':
-        print('Enter task title:');
-        var title = '';
-        while (title.isEmpty) {
-          title = stdin.readLineSync() ?? '';
+      case '5':
+        if (taskManager.tasks.isEmpty) {
+          print('No tasks available.');
+          break;
         }
-        taskManager.stopTimer(title);
+        print('Select a task:');
+        for (var i = 0; i < taskManager.tasks.length; i++) {
+          print('${i + 1}. ${taskManager.tasks[i].title}');
+        }
+        var taskIndex = int.parse(stdin.readLineSync() ?? '0') - 1;
+        if (taskIndex < 0 || taskIndex >= taskManager.tasks.length) {
+          print('Invalid task number. Please try again.');
+          break;
+        }
+        if (input == '2') {
+          taskManager.startTimer(taskManager.tasks[taskIndex].title);
+        } else if (input == '3') {
+          taskManager.stopTimer(taskManager.tasks[taskIndex].title);
+        } else if (input == '5') {
+          taskManager.markTaskAsComplete(taskManager.tasks[taskIndex].title);
+        }
         break;
       case '4':
         taskManager.listTasks();
-        break;
-      case '5':
-        print('Enter task title:');
-        var title = '';
-        while (title.isEmpty) {
-          title = stdin.readLineSync() ?? '';
-        }
-        taskManager.markTaskAsComplete(title);
         break;
       case '6':
         return;
