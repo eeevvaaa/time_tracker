@@ -6,6 +6,13 @@ void main() async {
   var dataStorage = DataStorage(path: 'tasks.json');
   var tasks = await dataStorage.loadTasks();
   var taskManager = TaskManager(tasks: tasks);
-  handleUserInput(taskManager);
-  await dataStorage.saveTasks(taskManager.tasks);
+
+  try {
+    handleUserInput(taskManager);
+  } finally {
+    if (taskManager.activeTask != null) {
+      taskManager.stopTimer(taskManager.activeTask!.title);
+    }
+    await dataStorage.saveTasks(taskManager.tasks);
+  }
 }

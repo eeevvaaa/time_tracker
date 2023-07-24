@@ -2,7 +2,7 @@ class Task {
   String title;
   String description;
   DateTime deadline;
-  Duration totalTimeSpent;
+  Duration totalTimeSpent = Duration.zero;
   bool isComplete;
   DateTime? startTime;
 

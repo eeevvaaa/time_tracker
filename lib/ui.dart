@@ -1,18 +1,24 @@
 import 'dart:io';
 import 'task_manager.dart';
 
-void printMenu() {
+void printMenu(TaskManager taskManager) {
+  print('Select an option:');
   print('1. Create a new task');
   print('2. Start timer for a task');
   print('3. Stop timer for a task');
-  print('4. List all tasks');
-  print('5. Mark a task as complete');
-  print('6. Exit');
+  print('4. Show all tasks');
+  print('5. Show task details');
+  if (taskManager.activeTask != null) {
+    print('6. Show active timer');
+    print('7. Exit');
+  } else {
+    print('6. Exit');
+  }
 }
 
 void handleUserInput(TaskManager taskManager) {
   while (true) {
-    printMenu();
+    printMenu(taskManager);
     var input = stdin.readLineSync();
     switch (input) {
       case '1':
@@ -86,9 +92,22 @@ void handleUserInput(TaskManager taskManager) {
         taskManager.markTaskAsComplete(taskManager.tasks[taskIndex].title);
         break;
       case '6':
-        return;
+        if (taskManager.activeTask != null) {
+          var elapsedTime =
+              DateTime.now().difference(taskManager.activeTask!.startTime!);
+          print(
+              'Elapsed time for active task "${taskManager.activeTask!.title}": ${taskManager.formatDuration(elapsedTime)}');
+        } else {
+          return;
+        }
+        break;
+      case '7':
+        if (taskManager.activeTask != null) {
+          return;
+        }
+        break;
       default:
-        print('Invalid option');
+        print('Invalid option. Please try again.');
     }
   }
 }
