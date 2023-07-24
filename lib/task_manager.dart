@@ -52,11 +52,18 @@ class TaskManager {
     for (var task in tasks) {
       print('Title: ${task.title}');
       print('Description: ${task.description}');
-      print('Deadline: ${task.deadline}');
-      print('Total Time Spent: ${task.totalTimeSpent}');
+      print(
+          'Deadline: ${task.deadline.month}/${task.deadline.day}/${task.deadline.year}');
+      print('Total Time Spent: ${formatDuration(task.totalTimeSpent)}');
       print('Is Complete: ${task.isComplete}');
       print('-------------------------');
     }
+  }
+
+  void showTotalTimeSpent() {
+    var totalTimeSpent =
+        tasks.fold(Duration.zero, (prev, task) => prev + task.totalTimeSpent);
+    print('Total time spent on all tasks: ${formatDuration(totalTimeSpent)}');
   }
 
   void showTaskDetails(String title) {
@@ -72,6 +79,10 @@ class TaskManager {
             'Start time: ${task.startTime!.month}/${task.startTime!.day}/${task.startTime!.year} at ${task.startTime!.hour}:${task.startTime!.minute}');
         var elapsedTime = DateTime.now().difference(task.startTime!);
         print('Elapsed time: ${formatDuration(elapsedTime)}');
+        var totalTimeSpent = tasks.fold(
+            Duration.zero, (prev, task) => prev + task.totalTimeSpent);
+        print(
+            'Total time spent on all tasks: ${formatDuration(totalTimeSpent)}');
       }
       print('Total time spent: ${formatDuration(task.totalTimeSpent)}');
     } catch (e) {

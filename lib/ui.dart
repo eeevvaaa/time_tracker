@@ -7,7 +7,7 @@ void printMenu(TaskManager taskManager) {
   print('2. Start timer for a task');
   print('3. Stop timer for a task');
   print('4. Show all tasks');
-  print('5. Show task details');
+  print('5. Mark a task as complete');
   if (taskManager.activeTask != null) {
     print('6. Show active timer');
     print('7. Exit');
@@ -35,20 +35,28 @@ void handleUserInput(TaskManager taskManager) {
         DateTime deadline = DateTime.now();
         while (true) {
           print(
-              'Enter task deadline (yyyy-mm-dd) or just hit enter for today\'s date:');
+              'Enter task deadline (mm-dd-yy) or just hit enter for today\'s date:');
           var deadlineInput = stdin.readLineSync();
           if (deadlineInput == null || deadlineInput.isEmpty) {
             break;
           }
-          try {
-            deadline = DateTime.parse(deadlineInput);
+          var parts = deadlineInput.split('-');
+          if (parts.length != 3) {
+            print('Invalid date format. Using today\'s date as the deadline.');
+          } else {
+            var month = int.parse(parts[0]);
+            var day = int.parse(parts[1]);
+            var year = int.parse(parts[2]);
+            if (year < 100) {
+              year += 2000; // Convert two-digit year to four-digit year
+            }
+            deadline = DateTime(year, month, day);
             break;
-          } catch (e) {
-            print('Invalid date. Please try again.');
           }
         }
         taskManager.createTask(title, description, deadline);
         break;
+
       case '2':
         if (taskManager.tasks.isEmpty) {
           print('No tasks available.');
@@ -97,6 +105,10 @@ void handleUserInput(TaskManager taskManager) {
               DateTime.now().difference(taskManager.activeTask!.startTime!);
           print(
               'Elapsed time for active task "${taskManager.activeTask!.title}": ${taskManager.formatDuration(elapsedTime)}');
+          var totalTimeSpent =
+              taskManager.activeTask!.totalTimeSpent + elapsedTime;
+          print(
+              'Total time spent on active task "${taskManager.activeTask!.title}": ${taskManager.formatDuration(totalTimeSpent)}');
         } else {
           return;
         }
