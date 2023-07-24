@@ -62,11 +62,14 @@ class TaskManager {
   void showTaskDetails(String title) {
     try {
       var task = tasks.firstWhere((task) => task.title == title);
+
       print('Title: ${task.title}');
       print('Description: ${task.description}');
-      print('Deadline: ${task.deadline}');
+      print(
+          'Deadline: ${task.deadline.month}/${task.deadline.day}/${task.deadline.year}');
       if (task.startTime != null) {
-        print('Start time: ${task.startTime}');
+        print(
+            'Start time: ${task.startTime!.month}/${task.startTime!.day}/${task.startTime!.year} at ${task.startTime!.hour}:${task.startTime!.minute}');
         var elapsedTime = DateTime.now().difference(task.startTime!);
         print('Elapsed time: ${formatDuration(elapsedTime)}');
       }
