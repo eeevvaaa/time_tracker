@@ -2,6 +2,7 @@ import 'task.dart';
 
 class TaskManager {
   List<Task> tasks;
+  Task? activeTask;
 
   TaskManager({required this.tasks});
 
@@ -15,16 +16,31 @@ class TaskManager {
   }
 
   void startTimer(String title) {
-    var task = tasks.firstWhere((task) => task.title == title);
-    task.startTime = DateTime.now();
+    if (activeTask != null) {
+      stopTimer(activeTask!.title);
+    }
+    try {
+      var task = tasks.firstWhere((task) => task.title == title);
+      task.startTime = DateTime.now();
+      activeTask = task;
+      print('Timer for task "$title" has been started.');
+    } catch (e) {
+      print('Task "$title" not found.');
+    }
   }
 
-  void stopTimer(String title) {
+  void stopTimer(String title, {bool printMessage = true}) {
     var task = tasks.firstWhere((task) => task.title == title);
     if (task.startTime != null) {
       var timeSpent = DateTime.now().difference(task.startTime!);
       task.totalTimeSpent += timeSpent;
       task.startTime = null; // reset startTime
+      if (printMessage) {
+        print('Timer for task "$title" has been stopped.');
+      }
+    }
+    if (activeTask == task) {
+      activeTask = null;
     }
   }
 
@@ -42,5 +58,9 @@ class TaskManager {
   void markTaskAsComplete(String title) {
     var task = tasks.firstWhere((task) => task.title == title);
     task.isComplete = true;
+    if (activeTask == task) {
+      activeTask = null;
+    }
+    print('Task "$title" has been marked as complete.');
   }
 }
