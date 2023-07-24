@@ -21,17 +21,22 @@ void handleUserInput(TaskManager taskManager) {
         while (title.isEmpty) {
           title = stdin.readLineSync() ?? '';
         }
-        print('Enter task description:');
-        var description = '';
-        while (description.isEmpty) {
-          description = stdin.readLineSync() ?? '';
+        print('Enter task description (or just hit enter to skip):');
+        var description = stdin.readLineSync();
+        if (description == null || description.isEmpty) {
+          description = 'No description provided';
         }
-        DateTime? deadline;
-        while (deadline == null) {
-          print('Enter task deadline (yyyy-mm-dd):');
-          var deadlineInput = stdin.readLineSync() ?? '';
+        DateTime deadline = DateTime.now();
+        while (true) {
+          print(
+              'Enter task deadline (yyyy-mm-dd) or just hit enter for today\'s date:');
+          var deadlineInput = stdin.readLineSync();
+          if (deadlineInput == null || deadlineInput.isEmpty) {
+            break;
+          }
           try {
             deadline = DateTime.parse(deadlineInput);
+            break;
           } catch (e) {
             print('Invalid date. Please try again.');
           }
